@@ -19,7 +19,14 @@ export default defineConfig({
       // demo App aren't part of what gets published (see package.json's
       // "files"), so don't waste time/type-check them here either.
       include: ["src/**/*.ts", "src/**/*.tsx"],
-      exclude: ["src/**/*.stories.tsx", "src/App.tsx", "src/main.tsx"],
+      exclude: [
+        "src/**/*.stories.tsx",
+        "src/**/*.test.tsx",
+        "src/**/*.test.ts",
+        "src/test/**",
+        "src/App.tsx",
+        "src/main.tsx",
+      ],
       rollupTypes: true,
     }),
   ],

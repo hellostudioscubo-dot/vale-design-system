@@ -61,7 +61,8 @@ O que já existe:
   pacote npm publicado (7,9MB — decisão explícita da usuária, ver README
   "Assets"). Só usados pelo Storybook e pela demo.
 - src/hooks/useTheme.ts — dark mode toggle persistido, não vem do Figma.
-- src/components/ — Atomic Design, 14 componentes com Storybook cada:
+- src/components/ — Atomic Design, 14 componentes, cada um com Storybook
+  E teste automatizado (Vitest + Testing Library + jest-axe):
   - atoms: Button, Input, Chip, Toggle, ProgressBar, ProgressRing,
     NumberBlock, NavItem, ThemeToggle (não vem do Figma)
   - molecules: Card, MonthStrip, EggCard
@@ -116,16 +117,26 @@ nos comentários do código, vale saber pra não reintroduzir):
    como ESM por causa da extensão `.js` genérica. Só apareceu testando o
    build de verdade (`require()` do arquivo), não só checando os tipos.
    Corrigido nomeando a saída `.cjs` (sem `.js`) em vite.config.lib.ts.
+6. Testes automatizados (2026-09-09): `ProgressBar` tinha um label visível
+   (`<span>`) sem associação programática com o `role="progressbar"` do
+   Radix — `jest-axe` pegou (`aria-progressbar-name`). Corrigido com
+   `useId()` + `aria-labelledby`. E: jsdom não implementa `window.matchMedia`
+   (todo navegador real tem) — sem mockar em src/test/setup.ts,
+   `useTheme`/`ThemeToggle` quebravam em qualquer teste.
 
 O que NÃO está feito ainda (próximos passos possíveis):
 - Navbar não tem uma Component Property de "aba ativa" no sentido Figma
   (a seleção é via prop `selectedKey`, o que já resolve o caso de uso, mas
   não replica 1:1 a estrutura de variantes do Figma).
-- Sem testes automatizados (unit/visual regression) além do addon de a11y.
+- Testes automatizados cobrem unit/interação/a11y (Vitest + Testing
+  Library + jest-axe, ver README "Testes") — mas nenhum teste visual de
+  regressão (screenshot diff) ainda.
 - Storybook estático (build-storybook) não está publicado em lugar nenhum
   além do próprio build local — só o pacote em si está no npm.
 
 Comandos:
+- `npm test` — testes automatizados (Vitest, uma vez só)
+- `npm run test:watch` — idem, modo watch
 - `npm run storybook` — catálogo de componentes (porta 6006)
 - `npm run dev` — demo viva (tela "Hoje" combinando os componentes)
 - `npm run build` — build de produção da demo

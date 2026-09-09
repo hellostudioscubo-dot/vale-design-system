@@ -38,6 +38,8 @@ src/
 │   └── organisms/   Navbar, Modal — compõem átomos/moléculas em blocos completos de tela.
 ├── hooks/           `useTheme` — toggle de dark mode persistido (não vem do Figma).
 ├── lib/             Utilitário `cn()` (clsx + tailwind-merge).
+├── test/            `setup.ts` — configuração global do Vitest (jest-dom, jest-axe,
+│                    mock de matchMedia pro jsdom).
 ├── index.ts         Ponto de entrada da biblioteca publicada no npm.
 ├── App.tsx          Demo viva combinando os componentes (tela "Hoje").
 └── index.css        Diretivas do Tailwind + tokens de tema (light/dark) + import das
@@ -100,6 +102,35 @@ reais fora deste repositório, copie `src/assets/companions/` e `src/assets/bran
 - O Storybook roda com `@storybook/addon-a11y` (`test: "error"` em `.storybook/preview.tsx`),
   então qualquer PR que adicionar uma story com violação de acessibilidade falha visivelmente
   no painel de Accessibility.
+- Todo componente tem um teste `jest-axe` (`toHaveNoViolations`) no CI — a mesma checagem do
+  addon do Storybook, mas rodável sem navegador (ver "Testes" abaixo).
+
+## Testes
+
+`npm test` roda Vitest + Testing Library + jest-dom + jest-axe (jsdom, sem navegador).
+Cada componente tem um `Componente.test.tsx` ao lado do seu `.tsx`, cobrindo:
+
+- **Renderização e interação** — o que um usuário realmente vê/faz (clicar, digitar,
+  abrir/fechar), não detalhes de implementação.
+- **Comportamento de acessibilidade** que o próprio componente promete no seu doc comment
+  (`aria-current`, `aria-invalid`+`aria-describedby`, `disabled` nativo…) — não só que ele
+  existe, mas que reage certo a props/interação.
+- **`jest-axe`** em cada variante relevante — captura os mesmos problemas que o addon de
+  a11y do Storybook, só que sem precisar abrir o navegador.
+
+Dois arquivos testam infraestrutura em vez de um componente:
+- `src/lib/utils.test.ts` — regressão direta do bug do `cn()` documentado em `utils.ts`
+  (classes de tamanho de fonte sendo confundidas com cor de texto).
+- `src/tokens/colors.test.ts` — calcula contraste WCAG de verdade (fórmula da própria
+  spec, não uma lib externa) para cada par texto/fundo em `semantic`/`semanticDark`.
+  Foi assim que os três bugs de contraste do dark mode foram achados nesta sessão —
+  este teste existe pra eles não voltarem.
+
+```bash
+npm test              # roda uma vez (CI)
+npm run test:watch    # modo watch, pra desenvolvimento
+npm run test:coverage # com relatório de cobertura (v8)
+```
 
 ## Como rodar
 
