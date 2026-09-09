@@ -50,8 +50,28 @@ export function Card({ track, title, subtitle, variant, onContinue, className }:
         )}
       </div>
 
-      <h3 className="font-body text-corpo-m font-semibold text-text-primary">{title}</h3>
-      <p className="font-body text-legenda text-text-secondary">{subtitle}</p>
+      {/* `completed`'s bg-success-subtle is a static tint (same value in
+          both themes — see semanticDark's doc comment in
+          src/tokens/colors.ts), so its text must stay static too: the
+          flipping text-text-primary/-secondary tokens would go light in
+          dark mode while this tint stays light, and disappear. `palette.*`
+          is the documented escape hatch for exactly this one-off case. */}
+      <h3
+        className={cn(
+          "font-body text-corpo-m font-semibold",
+          isCompleted ? "text-palette-grafite" : "text-text-primary",
+        )}
+      >
+        {title}
+      </h3>
+      <p
+        className={cn(
+          "font-body text-legenda",
+          isCompleted ? "text-palette-cinzaMedio" : "text-text-secondary",
+        )}
+      >
+        {subtitle}
+      </p>
 
       {variant === "expanded" && onContinue && (
         <Button variant="primary" onClick={onContinue} className="w-full">

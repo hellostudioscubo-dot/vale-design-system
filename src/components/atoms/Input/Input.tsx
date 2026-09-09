@@ -43,7 +43,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         >
           {label}
           {required && (
-            <span aria-hidden className="text-warning-strong">
+            <span aria-hidden className="text-warning-onSurface">
               {" "}
               *
             </span>
@@ -59,9 +59,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             "min-h-touch w-full rounded-button border bg-surface px-4 font-body text-corpo text-text-primary",
             "border-border placeholder:text-text-secondary",
-            "focus-visible:border-primary",
+            "focus-visible:border-primary-onSurface",
             "disabled:cursor-not-allowed disabled:border-border disabled:bg-disabled-bg disabled:text-disabled-text",
-            error && "border-warning-strong focus-visible:ring-warning-strong",
+            error && "border-warning-onSurface focus-visible:ring-warning-onSurface",
             className,
           )}
           {...props}
@@ -73,7 +73,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {error && (
-          <p id={errorId} role="alert" className="font-body text-legenda text-warning-strong">
+          <p id={errorId} role="alert" className="font-body text-legenda text-warning-onSurface">
             {error}
           </p>
         )}

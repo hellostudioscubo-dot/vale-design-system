@@ -9,9 +9,12 @@ const styleToClassName: Record<TypeScaleToken, string> = {
   tituloM: "font-display text-titulo-m text-text-primary",
   numero: "font-display text-numero text-text-primary",
   // `achievement` (dourado) is documented in Figma as decorative — it isn't
-  // text-safe even at this size (2.0:1, needs 3:1). `warning-strong`
-  // (mel-queimado) is the family's dedicated text-safe dark variant.
-  numeroConquista: "font-display text-numero font-bold text-warning-strong",
+  // text-safe even at this size (2.0:1, needs 3:1). `warning-onSurface` is
+  // the theme-aware "safe as text directly on the page" variant (this
+  // renders straight on whatever surface it's placed on, not inside a
+  // static tinted pill — see semantic.warningOnSurface in
+  // src/tokens/colors.ts).
+  numeroConquista: "font-display text-numero font-bold text-warning-onSurface",
   timer: "font-display text-timer text-text-primary",
   corpo: "font-body text-corpo text-text-primary",
   corpoM: "font-body text-corpo font-medium text-text-primary",

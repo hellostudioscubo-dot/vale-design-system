@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vale Design System</title>
+    <script>
+      // Anti-flash: apply the stored/system theme before first paint, so
+      // there's no light→dark flicker on load. Mirrors src/hooks/useTheme.ts
+      // (kept in sync by hand — this must run before React, so it can't
+      // import the hook's module).
+      (function () {
+        try {
+          var stored = localStorage.getItem("vale-theme");
+          var dark = stored === "dark" || (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -41,7 +41,16 @@ export function MonthStrip({
             {month} <span className="font-normal text-text-secondary">· {itemCount} itens</span>
           </span>
           {completed ? (
-            <CheckIcon width={18} height={18} className="text-success-strong" aria-hidden />
+            <CheckIcon
+              width={18}
+              height={18}
+              // `success-onSurface`, not `-strong` — this icon sits right on
+              // the page (see semantic.successOnSurface in
+              // src/tokens/colors.ts), unlike Card's checkmark which sits
+              // inside the always-pale `success-subtle` tint.
+              className="text-success-onSurface"
+              aria-hidden
+            />
           ) : (
             <ChevronDownIcon
               width={18}

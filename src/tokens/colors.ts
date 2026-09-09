@@ -75,9 +75,92 @@ export const semantic = {
    *  achievement-related text/icons, never this one directly. */
   achievement: palette.dourado,
 
+  /**
+   * `primaryOnSurface` / `successOnSurface` / `warningOnSurface` — the
+   * theme-aware siblings of `primary` / `successStrong` / `warningStrong`,
+   * for the *other* role those play: colored text/icons sitting directly
+   * on a page or card surface (a selected NavItem, an outline/text Button,
+   * an error message) rather than inside a self-contained tinted pill
+   * (Chip, the completed Card, achievement badges). A pill's own tint
+   * never changes with theme (see semanticDark's doc comment), so its
+   * paired text shouldn't either — but text straight on `surface`/
+   * `surface-muted` sits on a background that *does* go dark, and
+   * `melQueimado`/`salviaEscura`/`roxo` were only ever tuned for a light
+   * one (2.6:1 / 1.9:1 / 2.0:1 against the dark surfaces — all fail AA).
+   * In light mode these equal their non-"OnSurface" counterpart exactly;
+   * see semanticDark for the dark-mode values.
+   */
+  primaryOnSurface: palette.roxo,
+  successOnSurface: palette.salviaEscura,
+  warningOnSurface: palette.melQueimado,
+
   // Disabled
   disabledBg: palette.areiaClara,
   disabledText: palette.cinzaMedio,
 } as const;
 
 export type SemanticToken = keyof typeof semantic;
+
+/**
+ * Dark theme — NOT from Figma. The source file only defines a light theme
+ * (see the module doc comment), so these values are our own addition,
+ * added 2026-09-09 when dark mode was wired up. Scope was kept deliberately
+ * narrow — only two kinds of token get redefined for dark:
+ *  1. Neutrals whose role is "page/card background, border or body text",
+ *     where a value tuned for a light backdrop stops working once the
+ *     backdrop itself goes dark.
+ *  2. The `*OnSurface` family — brand/state hues used as text/icons
+ *     directly on those same neutrals (see their doc comment above).
+ * Every other semantic token (brand fills like `primary`, `accent`, and
+ * the `*Subtle`/`*Strong` family used as chip/card tints) is used as an
+ * opaque surface with its own already-verified internal text contrast —
+ * that pairing doesn't change when the *page* around it goes dark, so
+ * those tokens intentionally keep one value across both themes.
+ *
+ * `surfaceMuted`'s dark value reuses `palette.roxoNoite` verbatim — the
+ * Figma file's own dark plum. Everything else here (`surface`, `border`,
+ * `borderStrong`, `textSecondary`, `disabledBg`) is a new hex chosen to
+ * land at roughly the same *relative* distance from its neighbor as the
+ * equivalent light-mode pair (e.g. dark `surface` vs `surfaceMuted` sit
+ * ~1.13:1 apart, matching light `surface` vs `surfaceMuted` at ~1.11:1) so
+ * the two themes read as the same design, not a re-skin. All text/border
+ * pairs below were checked against WCAG: textPrimary/textOnMuted ≈14.7:1,
+ * textSecondary ≈8.4:1 (AA requires 4.5:1), borderStrong ≈4.1:1 (AA
+ * non-text needs 3:1).
+ *
+ * `surfaceInverse` and `textInverse` are deliberately NOT listed here,
+ * even though their names suggest they should flip. Checked against how
+ * they're actually consumed: `textInverse` only ever pairs with the
+ * *static* `bg-primary` fill (Button's primary variant, ThemeToggle's
+ * moon icon) — flipping it to a dark color put dark text on that same
+ * dark-ish purple in dark mode and failed AA (1.94:1, caught by the a11y
+ * addon). `surfaceInverse` is only used as Modal's backdrop scrim
+ * (`bg-surface-inverse/40`), which needs to stay a *dimming* dark tint in
+ * both themes, not flip to a light haze. Both keep one value everywhere,
+ * same as the brand-fill family.
+ */
+export const semanticDark = {
+  surface: "#2F2540",
+  surfaceMuted: palette.roxoNoite,
+
+  border: "#453868",
+  borderStrong: "#8B84A0",
+
+  textPrimary: palette.areia,
+  textSecondary: "#C9C2D9",
+  textOnMuted: palette.areia,
+
+  disabledBg: "#3A314C",
+  disabledText: "#8B84A0",
+
+  // `*OnSurface` — lighter tints of the same hue, all reused verbatim from
+  // the existing Figma palette rather than invented: `lilas` and `ambar`
+  // are already brand/warning primitives one step lighter than `roxo`/
+  // `melQueimado`; `salviaClara` is the palette's existing lighter green,
+  // unused anywhere else in `semantic`. Checked against both dark
+  // surfaces: primaryOnSurface ≈6.5–7.4:1, successOnSurface ≈7.7–8.7:1,
+  // warningOnSurface ≈6.7–7.6:1 (AA requires 4.5:1, with room to spare).
+  primaryOnSurface: palette.lilas,
+  successOnSurface: palette.salviaClara,
+  warningOnSurface: palette.ambar,
+} satisfies Partial<Record<SemanticToken, string>>;

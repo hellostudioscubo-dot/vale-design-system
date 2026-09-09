@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Button, Input, Chip, Toggle, ProgressBar, ProgressRing, NumberBlock } from "@/components/atoms";
+import {
+  Button,
+  Input,
+  Chip,
+  Toggle,
+  ProgressBar,
+  ProgressRing,
+  NumberBlock,
+  ThemeToggle,
+} from "@/components/atoms";
 import { Card, MonthStrip } from "@/components/molecules";
 import { Navbar, Modal } from "@/components/organisms";
 import { Text } from "@/foundations";
@@ -22,11 +31,14 @@ export default function App() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col gap-6 p-6">
-      <header className="flex flex-col gap-1">
-        <Text variant="tituloG">Vale Design System</Text>
-        <Text variant="auxiliar">
-          Componentes gerados a partir do Figma (Foundations + Components).
-        </Text>
+      <header className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <Text variant="tituloG">Vale Design System</Text>
+          <Text variant="auxiliar">
+            Componentes gerados a partir do Figma (Foundations + Components).
+          </Text>
+        </div>
+        <ThemeToggle className="mt-1" />
       </header>
 
       <section className="flex items-center justify-between rounded-card border border-border bg-surface p-4 shadow-leve">

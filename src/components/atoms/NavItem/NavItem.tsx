@@ -22,8 +22,12 @@ export const NavItem = forwardRef<HTMLButtonElement, NavItemProps>(
       aria-current={selected ? "page" : undefined}
       className={cn(
         "flex min-h-touch min-w-touch flex-1 flex-col items-center justify-center gap-1 rounded-button py-2",
-        "text-text-secondary transition-colors hover:text-primary",
-        selected && "text-primary",
+        // `text-primary-onSurface`, not `text-primary` — this sits right on
+        // Navbar's `bg-surface`, and `primary` (roxo) alone isn't dark-mode
+        // safe there (~2:1; see semantic.primaryOnSurface in
+        // src/tokens/colors.ts).
+        "text-text-secondary transition-colors hover:text-primary-onSurface",
+        selected && "text-primary-onSurface",
         className,
       )}
       {...props}

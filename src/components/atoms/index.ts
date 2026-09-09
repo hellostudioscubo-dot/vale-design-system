@@ -6,3 +6,4 @@ export * from "./ProgressBar";
 export * from "./ProgressRing";
 export * from "./NumberBlock";
 export * from "./NavItem";
+export * from "./ThemeToggle";

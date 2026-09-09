@@ -18,8 +18,11 @@ export function NumberBlock({ value, label, emphasis, className }: NumberBlockPr
       <span
         className={cn(
           "font-display text-numero text-text-primary",
-          // `achievement` (dourado) is decorative-only in Figma — not text-safe.
-          emphasis && "font-bold text-warning-strong",
+          // `achievement` (dourado) is decorative-only in Figma — not
+          // text-safe. `warning-onSurface`, not `-strong`: this sits
+          // directly on the page/card surface (see semantic.warningOnSurface
+          // in src/tokens/colors.ts).
+          emphasis && "font-bold text-warning-onSurface",
         )}
       >
         {value}

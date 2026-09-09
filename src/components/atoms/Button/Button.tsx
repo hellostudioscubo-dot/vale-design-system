@@ -29,13 +29,26 @@ const buttonVariants = cva(
           "disabled:bg-disabled-bg disabled:text-disabled-text",
         ],
         secondary: [
-          "bg-transparent text-primary border border-primary",
-          "hover:bg-primary-subtle active:bg-primary-subtle",
+          // Base state sits on whatever page/card surface shows through
+          // `bg-transparent`, so it needs the dark-mode-safe `onSurface`
+          // color (`primary` alone fails AA there — see
+          // semantic.primaryOnSurface in src/tokens/colors.ts). Hover/active
+          // switch to the *static* `primary-subtle` fill instead, which
+          // stays pale in both themes, so they revert to the plain `primary`/
+          // `primary` pairing that tint was already verified against.
+          "bg-transparent text-primary-onSurface border border-primary-onSurface",
+          "hover:bg-primary-subtle hover:text-primary hover:border-primary",
+          "active:bg-primary-subtle active:text-primary active:border-primary",
           "disabled:border-disabled-text disabled:text-disabled-text",
         ],
         text: [
-          "bg-transparent text-primary px-2 underline-offset-4",
-          "hover:underline active:text-primary-pressed",
+          "bg-transparent text-primary-onSurface px-2 underline-offset-4",
+          // Opacity instead of `primaryPressed` (roxoProfundo) for the
+          // pressed feedback — that color is darker still than `primary`,
+          // which already isn't dark-mode safe on its own here; dimming
+          // works as "pressed" feedback in both themes without needing a
+          // third onSurface shade just for this one momentary state.
+          "hover:underline active:opacity-70",
           "disabled:text-disabled-text",
         ],
       },

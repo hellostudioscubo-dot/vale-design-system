@@ -7,10 +7,51 @@
 @layer base {
   :root {
     color-scheme: light;
+
+    /* Light theme — the values ported straight from Figma (`semantic` in
+       src/tokens/colors.ts), as "R G B" triples for Tailwind's
+       rgb(var(...) / <alpha-value>) color pattern. Only the tokens whose
+       role shifts between themes live here as vars; see
+       tailwind.config.ts's `withOpacity` and colors.ts's `semanticDark`
+       doc comment for which tokens these are and why. */
+    --color-surface: 255 255 255; /* brancoCartao */
+    --color-surface-muted: 247 243 237; /* areia */
+    --color-border: 242 237 228; /* areiaClara */
+    --color-border-strong: 107 101 96; /* cinzaMedio */
+    --color-text-primary: 46 42 38; /* grafite */
+    --color-text-secondary: 107 101 96; /* cinzaMedio */
+    --color-disabled-bg: 242 237 228; /* areiaClara */
+    --color-disabled-text: 107 101 96; /* cinzaMedio */
+
+    --color-primary-on-surface: 95 75 139; /* roxo */
+    --color-success-on-surface: 61 90 56; /* salviaEscura */
+    --color-warning-on-surface: 138 97 20; /* melQueimado */
+  }
+
+  /* Dark theme — not from Figma, see semanticDark in src/tokens/colors.ts
+     for the derivation and the contrast ratios each pair was checked
+     against. Toggled by adding/removing `.dark` on <html> (see
+     src/hooks/useTheme.ts) rather than only following
+     prefers-color-scheme, so a viewer's explicit choice always wins. */
+  :root.dark {
+    color-scheme: dark;
+
+    --color-surface: 47 37 64;
+    --color-surface-muted: 36 28 51; /* roxoNoite, reused */
+    --color-border: 69 56 104;
+    --color-border-strong: 139 132 160;
+    --color-text-primary: 247 243 237; /* areia, reused */
+    --color-text-secondary: 201 194 217;
+    --color-disabled-bg: 58 49 76;
+    --color-disabled-text: 139 132 160;
+
+    --color-primary-on-surface: 185 166 220; /* lilas */
+    --color-success-on-surface: 178 194 175; /* salviaClara */
+    --color-warning-on-surface: 232 163 61; /* ambar */
   }
 
   body {
-    @apply bg-surface-muted text-text-primary antialiased;
+    @apply bg-surface-muted text-text-primary antialiased transition-colors duration-200;
     font-family: theme("fontFamily.body");
   }
 
