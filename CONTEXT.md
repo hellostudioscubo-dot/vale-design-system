@@ -30,13 +30,17 @@ claude
 Estou desenvolvendo o "Vale Design System" (React + TypeScript + Tailwind),
 baseado no arquivo Figma "Vale — App de estudos"
 (https://www.figma.com/design/CiJCwsSvwdxtorWL8uUHQQ — páginas Foundations
-node-id=394-2 e Components node-id=394-8, que eu mesma organizei com o Claude
-antes de gerar este código).
+node-id=394-2, Components node-id=394-8, e Fluxo do App - mobile node-id=1-2,
+que eu mesma organizei com o Claude antes de gerar este código).
 
-STATUS ATUAL (atualizado 2026-09-09): Foundations + Components completos e
-verificados, MAIS dark mode, assets reais e publicação no npm. Remote
-GitHub configurado. Build + Storybook rodando limpos, sem erros de
-TypeScript, sem violações de acessibilidade.
+STATUS ATUAL (atualizado 2026-09-09, sessão 2): Foundations + Components
+completos e verificados, MAIS dark mode, assets reais, publicação no npm, e
+agora também a página "Fluxo do App - mobile" inteira adaptada: 15 templates
+(camada `components/templates/`) cobrindo as ~30 telas do fluxo (ver README
+→ "Fluxo do App - mobile" pro mapeamento tela-a-tela), mais 9 átomos, 8
+moléculas e 2 organismos novos extraídos delas. Build + Storybook + testes
+rodando limpos (250 testes, `npm test`), sem erros de TypeScript, sem
+violações de acessibilidade, sem warnings de lint. Remote GitHub configurado.
 
 - Remote: https://github.com/hellostudioscubo-dot/vale-design-system
   (branch main, sincronizada).
@@ -57,19 +61,31 @@ O que já existe:
 - src/icons/ — 9 ícones SVG (traço 1.5px, grade 24x24) + SunIcon/MoonIcon
   (dark mode toggle, não vêm do Figma)
 - src/assets/ — assets reais exportados do Figma (companions/: 18 fotos do
-  Egg Card; brand/: favicon.svg + wordmark em 3 cores). NÃO entram no
-  pacote npm publicado (7,9MB — decisão explícita da usuária, ver README
-  "Assets"). Só usados pelo Storybook e pela demo.
+  Egg Card; brand/: favicon.svg + wordmark em 3 cores; screens/: 4
+  ilustrações de tela — Splash, Vale, Fim de sessão, Hoje — pras stories dos
+  templates). NÃO entram no pacote npm publicado (mesma decisão de sempre,
+  ver README "Assets"). Só usados pelo Storybook e pela demo.
 - src/hooks/useTheme.ts — dark mode toggle persistido, não vem do Figma.
-- src/components/ — Atomic Design, 14 componentes, cada um com Storybook
-  E teste automatizado (Vitest + Testing Library + jest-axe):
-  - atoms: Button, Input, Chip, Toggle, ProgressBar, ProgressRing,
-    NumberBlock, NavItem, ThemeToggle (não vem do Figma)
-  - molecules: Card, MonthStrip, EggCard
-  - organisms: Navbar, Modal
+- src/components/ — Atomic Design, agora 5 camadas (a 5ª, `templates/`, é
+  nova desta sessão), cada componente com Storybook E teste automatizado
+  (Vitest + Testing Library + jest-axe):
+  - atoms: Button, Input, Textarea, Select, Chip, Toggle, SegmentedControl,
+    ProgressBar, ProgressRing, LoadingBar, NumberBlock, NavItem, ColorSwatch,
+    LinkChip, Sparkline, Notice, StepDots, ThemeToggle (não vem do Figma)
+  - molecules: Card, MonthStrip, EggCard, CompanionCard, CompanionBubble,
+    InfoBox, SessionHistoryItem, TrendStat, AchievementListItem,
+    SettingsRow, EmptyState
+  - organisms: Navbar, Modal, SettingsSection, AchievementGroup
+  - templates (novo, da página Fluxo do App - mobile): SplashScreen,
+    OnboardingIntroScreen, OnboardingCourseFormScreen,
+    CharacterSelectionScreen, LoginScreen, HomeScreen, ItemDetailScreen,
+    FocusSessionScreen, SessionEndScreen, PlanScreen, NewItemScreen,
+    VaultScreen, ProgressScreen, CertificatesScreen, SettingsScreen — ver
+    README → "Fluxo do App - mobile" pro mapeamento tela-a-tela e a decisão
+    de escopo (telas completas exportadas pelo pacote, não só demo).
 - Todos os componentes interativos usam Radix UI por baixo (Dialog, Switch,
-  Progress, Label, Collapsible) para acessibilidade real (ARIA, foco,
-  teclado), não reimplementada na mão.
+  Progress, Label, Collapsible, Toggle Group) para acessibilidade real
+  (ARIA, foco, teclado), não reimplementada na mão.
 - .storybook/preview.tsx (renomeado de .ts pra suportar JSX do decorator de
   tema) está configurado com @storybook/addon-a11y rodando em "error" mode,
   restrito a WCAG 2.1 AA (não AAA), mais uma toolbar de tema (light/dark).
@@ -123,6 +139,34 @@ nos comentários do código, vale saber pra não reintroduzir):
    `useId()` + `aria-labelledby`. E: jsdom não implementa `window.matchMedia`
    (todo navegador real tem) — sem mockar em src/test/setup.ts,
    `useTheme`/`ThemeToggle` quebravam em qualquer teste.
+7. Fluxo do App - mobile (2026-09-09, sessão 2):
+   (a) `text-corpo-m` não existe como classe Tailwind — só `corpo-g`... não,
+   só as chaves reais de `fontSize` no tailwind.config.ts (`display`,
+   `titulo-g`, `titulo-m`, `numero`, `timer`, `corpo`, `auxiliar`, `legenda`;
+   "corpo-m" nunca foi uma delas). Já existia em `Card.tsx` e `Modal.tsx`
+   antes desta sessão (a classe simplesmente não fazia nada — Tailwind
+   ignora silenciosamente um nome que não bate com nenhum grupo), corrigido
+   para `text-corpo font-medium` (o mesmo par que `Text`'s variant `corpoM`
+   já usa) nos dois arquivos. Vale grep por `text-corpo-m` se voltar a
+   aparecer em código novo.
+   (b) Mesmo cuidado do dark mode (item 4 acima) se repetiu em componentes
+   novos que usam um fundo estático (`bg-primary-subtle`, `bg-primary`): o
+   texto por cima também precisa ser estático (`palette.roxoProfundo`,
+   `text-inverse`), nunca a família `*OnSurface` (calibrada pra texto direto
+   sobre a *página*, não dentro de um pill com tinta própria) — pegou
+   `InfoBox`, `LinkChip` e `SegmentedControl` antes de ir pra produção,
+   pela mesma leitura do doc comment de `semantic`/`semanticDark`, não por
+   um teste automatizado (o a11y do jest-axe não roda contraste real em
+   jsdom — só o Storybook, no navegador de verdade, pegaria isso).
+   (c) `PlanScreen` forçava seu próprio título pra `<h1>`, mas `Card` (que
+   ele lista logo abaixo) tem um `<h3>` fixo — h1 direto pra h3 pula h2 e
+   falha o `heading-order` do axe. Corrigido deixando o título no elemento
+   default de `tituloG` (`h2`). Ao compor um template novo com `Card`
+   dentro, checar isso antes de forçar `as="h1"` no título da página.
+   (d) `SettingsRow`: quando a linha é um `<button>` com label+valor em dois
+   `<span>` sem espaço entre eles no DOM, o nome acessível concatena sem
+   espaço ("CorLilás") — o algoritmo de accessible name não olha layout/CSS,
+   só nós de texto reais. Corrigido com `aria-label` explícito.
 
 O que NÃO está feito ainda (próximos passos possíveis):
 - Navbar não tem uma Component Property de "aba ativa" no sentido Figma
@@ -133,6 +177,16 @@ O que NÃO está feito ainda (próximos passos possíveis):
   regressão (screenshot diff) ainda.
 - Storybook estático (build-storybook) não está publicado em lugar nenhum
   além do próprio build local — só o pacote em si está no npm.
+- Os templates novos (Fluxo do App - mobile) ainda não foram publicados no
+  npm — build + testes + Storybook passam limpos localmente (ver "Bugs reais
+  encontrados" item 7), mas não rodei `npm version`/`npm publish` nesta
+  sessão nem fiz commit (aguardando confirmação).
+- Onboarding, Hoje e Vale têm nós animados no Figma (`motion/react`,
+  detectado pelo `get_design_context`) — não implementados; os templates
+  são estáticos.
+- src/App.tsx (a demo) continua só a tela "Hoje" original — não foi
+  atualizada pra usar os templates novos (`HomeScreen` etc.), que só
+  aparecem no Storybook (`Templates/*`) por enquanto.
 
 Comandos:
 - `npm test` — testes automatizados (Vitest, uma vez só)

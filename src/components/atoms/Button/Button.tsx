@@ -11,6 +11,22 @@ import { cn } from "@/lib/utils";
  *  - `variant` ⇔ the Figma component set ("Botão primário", "secundário", "texto")
  *  - disabled ⇔ Estado=Desabilitado (native `disabled`, never a visual-only style)
  *  - hover/active ⇔ Estado=Pressionado (native `:hover` / `:active`)
+ *
+ * Two more variants come from "Fluxo do App - mobile", not from the
+ * Components page, and are documented separately because they don't fit the
+ * primary/secondary/text model above:
+ *  - `amber`: every screen-flow CTA (onboarding, Hoje, Detalhe do item, Fim
+ *    de sessão, Novo item) overrides "Botão primário" to an amber fill with
+ *    dark (`grafite`) text instead of this file's own roxo `primary` — kept
+ *    as a separate variant rather than changing `primary`'s color, since
+ *    that would be a breaking visual change for anyone already consuming
+ *    `variant="primary"`. Static fill + static text, same reasoning as
+ *    Card's `completed` variant (see its doc comment).
+ *  - `outline`/`outlineMuted`: the "Sessão em foco" screen is a full-bleed
+ *    dark takeover (bg-primary-pressed, not the normal page surface), so
+ *    `secondary`'s `-onSurface` tokens (tuned for the light/dark *page*
+ *    surface) don't apply — these two use fixed light-on-dark colors
+ *    instead, matching that screen's own two buttons ("Iniciar" / "Encerrar").
  */
 const buttonVariants = cva(
   [
@@ -50,6 +66,21 @@ const buttonVariants = cva(
           // third onSurface shade just for this one momentary state.
           "hover:underline active:opacity-70",
           "disabled:text-disabled-text",
+        ],
+        amber: [
+          "bg-warning text-palette-grafite",
+          "hover:opacity-90 active:opacity-80",
+          "disabled:bg-disabled-bg disabled:text-disabled-text disabled:opacity-100",
+        ],
+        outline: [
+          "border border-palette-lilas text-palette-areiaClara bg-transparent",
+          "hover:bg-palette-lilas/10 active:bg-palette-lilas/20",
+          "disabled:border-palette-cinzaMedio disabled:text-palette-cinzaMedio",
+        ],
+        outlineMuted: [
+          "border border-palette-cinzaMedio text-palette-cinzaMedio bg-transparent",
+          "hover:bg-palette-cinzaMedio/10 active:bg-palette-cinzaMedio/20",
+          "disabled:opacity-50",
         ],
       },
       size: {

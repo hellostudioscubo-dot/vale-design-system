@@ -52,7 +52,7 @@ describe("Button", () => {
     expect(link).toHaveAttribute("href", "/plano");
   });
 
-  it.each(["primary", "secondary", "text"] as const)(
+  it.each(["primary", "secondary", "text", "amber", "outline", "outlineMuted"] as const)(
     "has no a11y violations — variant=%s",
     async (variant) => {
       const { container } = render(<Button variant={variant}>Continuar</Button>);

@@ -50,7 +50,7 @@ export function Modal({
             {icon ?? <CheckIcon width={28} height={28} />}
           </div>
 
-          <DialogPrimitive.Title className="font-body text-corpo-m font-semibold text-text-primary">
+          <DialogPrimitive.Title className="font-body text-corpo font-semibold text-text-primary">
             {title}
           </DialogPrimitive.Title>
           <DialogPrimitive.Description className="font-body text-auxiliar text-text-secondary">

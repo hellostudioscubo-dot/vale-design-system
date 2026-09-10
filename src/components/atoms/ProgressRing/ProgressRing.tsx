@@ -15,6 +15,21 @@ export interface ProgressRingProps {
   valueLabel: string;
   /** Small caption under the value, e.g. "Sessão 1". */
   caption?: string;
+  /**
+   * `timer` swaps the center text to the bigger "texto/timer" style (56px) —
+   * used by "Sessão em foco"'s full-screen 240px ring. Default `numero`
+   * (36px) matches every other, smaller use of this component.
+   */
+  valueVariant?: "numero" | "timer";
+  /**
+   * `onDark` — "Sessão em foco" is a full-bleed dark takeover
+   * (bg-primary-pressed), not the normal page surface, so the default
+   * `stroke-border`/`stroke-primary`/`text-text-primary` tokens (tuned for a
+   * light or dark *page*) don't apply here — this swaps in fixed
+   * light-on-dark colors instead, same reasoning as Button's `outline`
+   * variant doc comment.
+   */
+  tone?: "default" | "onDark";
   className?: string;
 }
 
@@ -25,12 +40,15 @@ export function ProgressRing({
   strokeWidth = 10,
   valueLabel,
   caption,
+  valueVariant = "numero",
+  tone = "default",
   className,
 }: ProgressRingProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const percent = Math.min(1, Math.max(0, value / max));
   const dashOffset = circumference * (1 - percent);
+  const onDark = tone === "onDark";
 
   return (
     <div
@@ -48,7 +66,7 @@ export function ProgressRing({
           cy={size / 2}
           r={radius}
           strokeWidth={strokeWidth}
-          className="fill-none stroke-border"
+          className={cn("fill-none", onDark ? "stroke-palette-lilasClaro/20" : "stroke-border")}
         />
         <circle
           cx={size / 2}
@@ -58,13 +76,31 @@ export function ProgressRing({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
-          className="fill-none stroke-primary transition-[stroke-dashoffset] duration-500 ease-out"
+          className={cn(
+            "fill-none transition-[stroke-dashoffset] duration-500 ease-out",
+            onDark ? "stroke-palette-areiaClara" : "stroke-primary",
+          )}
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="font-display text-numero text-text-primary">{valueLabel}</span>
+        <span
+          className={cn(
+            "font-display",
+            valueVariant === "timer" ? "text-timer tracking-tight" : "text-numero",
+            onDark ? "text-palette-areiaClara" : "text-text-primary",
+          )}
+        >
+          {valueLabel}
+        </span>
         {caption && (
-          <span className="font-body text-legenda text-text-secondary">{caption}</span>
+          <span
+            className={cn(
+              "font-body text-legenda",
+              onDark ? "text-palette-areiaClara/70" : "text-text-secondary",
+            )}
+          >
+            {caption}
+          </span>
         )}
       </div>
     </div>

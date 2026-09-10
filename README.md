@@ -2,7 +2,9 @@
 
 Design system em React + TypeScript + Tailwind CSS, gerado a partir do arquivo
 Figma **[Vale — App de estudos](https://www.figma.com/design/CiJCwsSvwdxtorWL8uUHQQ/Vale-%E2%80%94-App-de-estudos?node-id=394-2)**
-— páginas **Foundations** e **Components**.
+— páginas **Foundations**, **Components** e **Fluxo do App - mobile** (as ~30
+telas do app, adaptadas em `components/templates/` — ver "Do Figma para o
+código" abaixo).
 
 Publicado no npm: **[`vale-design-system`](https://www.npmjs.com/package/vale-design-system)**
 (`npm install vale-design-system`).
@@ -29,13 +31,24 @@ src/
 ├── assets/          Assets reais exportados do Figma — NÃO publicados no pacote npm
 │                    (ver "Assets" abaixo):
 │   ├── companions/  18 fotos (3 estágios × 6 cores) do Egg Card.
-│   └── brand/       Ícone do app (SVG) e wordmark "Vale" (PNG, 3 cores).
+│   ├── brand/       Ícone do app (SVG) e wordmark "Vale" (PNG, 3 cores).
+│   └── screens/     4 ilustrações de tela (Splash, Vale, Fim de sessão, Hoje),
+│                    só pras stories/demo dos templates renderizarem algo real.
 ├── components/      Componentes de UI, em Atomic Design:
-│   ├── atoms/       Button, Input, Chip, Toggle, ProgressBar, ProgressRing,
-│   │                NumberBlock, NavItem, ThemeToggle — não dependem de outro
-│   │                componente do DS.
-│   ├── molecules/   Card, MonthStrip, EggCard — compõem átomos.
-│   └── organisms/   Navbar, Modal — compõem átomos/moléculas em blocos completos de tela.
+│   ├── atoms/       Button, Input, Textarea, Select, Chip, Toggle, SegmentedControl,
+│   │                ProgressBar, ProgressRing, LoadingBar, NumberBlock, NavItem,
+│   │                ColorSwatch, LinkChip, Sparkline, Notice, StepDots, ThemeToggle —
+│   │                não dependem de outro componente do DS.
+│   ├── molecules/   Card, MonthStrip, EggCard, CompanionCard, CompanionBubble, InfoBox,
+│   │                SessionHistoryItem, TrendStat, AchievementListItem, SettingsRow,
+│   │                EmptyState — compõem átomos.
+│   ├── organisms/   Navbar, Modal, SettingsSection, AchievementGroup — compõem
+│   │                átomos/moléculas em blocos completos de tela.
+│   └── templates/   As ~16 telas de "Fluxo do App - mobile" (Splash, Onboarding,
+│                    Escolha do personagem, Login, Hoje, Detalhe do item, Sessão em
+│                    foco, Fim de sessão, Plano/Carreira, Novo item, Vale, Progresso,
+│                    Certificados, Ajustes) — telas completas, prontas pra importar
+│                    direto no app final (ver doc comment em `templates/index.ts`).
 ├── hooks/           `useTheme` — toggle de dark mode persistido (não vem do Figma).
 ├── lib/             Utilitário `cn()` (clsx + tailwind-merge).
 ├── test/            `setup.ts` — configuração global do Vitest (jest-dom, jest-axe,
@@ -84,11 +97,13 @@ Não vem do Figma — o arquivo só define um tema claro. Infraestrutura própri
 ## Assets
 
 `src/assets/` tem os assets reais exportados do Figma em 2026-09-09 (fotos do Egg Card,
-ícone do app, wordmark) — usados pelo Storybook e pela demo (`npm run dev`), mas
-**deliberadamente fora do pacote publicado no npm** (7,9MB, seria +27× o tamanho do
-pacote hoje). Quem instala via `npm install vale-design-system` continua fornecendo sua
-própria `imageSrc` para `EggCard`, como já era documentado. Se quiser usar as fotos
-reais fora deste repositório, copie `src/assets/companions/` e `src/assets/brand/`.
+ícone do app, wordmark, +4 ilustrações de tela de `assets/screens/`) — usados pelo
+Storybook e pela demo (`npm run dev`), mas **deliberadamente fora do pacote publicado
+no npm** (mesma decisão de sempre: cada template recebe suas imagens via props —
+`backgroundImageSrc`, `companionImageSrc`... — em vez de embutir fotos no pacote). Quem
+instala via `npm install vale-design-system` continua fornecendo seu próprio conteúdo,
+como já era documentado para `EggCard`. Se quiser usar as imagens reais fora deste
+repositório, copie `src/assets/companions/`, `src/assets/brand/` e `src/assets/screens/`.
 
 ## Acessibilidade
 
@@ -175,3 +190,37 @@ npm publish
 
 Cada mapeamento também é documentado no cabeçalho JSDoc do respectivo arquivo `.tsx`,
 com o link de volta para a seção correspondente no Figma.
+
+### Fluxo do App - mobile (adicionado 2026-09-09)
+
+Novos átomos/moléculas/organismos extraídos das telas, mais as 15 telas completas
+(`components/templates/`) que os compõem — a página em si tem ~30 frames, mas várias são
+o mesmo template em estados diferentes (primeiro acesso vs. depois de algumas horas de
+estudo, pausado vs. tocando...), não telas novas. Ver o doc comment de cada arquivo
+para o link exato de volta ao frame do Figma.
+
+| Template                        | Frames do Figma cobertos                                                  |
+|----------------------------------|-----------------------------------------------------------------------------|
+| `SplashScreen`                    | Splash                                                                      |
+| `OnboardingIntroScreen`           | Onboarding 1 de 4, Onboarding 2 de 4                                        |
+| `OnboardingCourseFormScreen`      | Onboarding 3 de 4 (estado vazio/preenchido)                                 |
+| `CharacterSelectionScreen`        | Escolha do personagem (+ 5 variantes de cor)                                |
+| `LoginScreen`                     | Login opcional                                                              |
+| `HomeScreen`                      | Hoje primeiro acesso / após algumas horas de estudo                        |
+| `ItemDetailScreen`                | Detalhe do item primeiro acesso / após algumas horas de estudo             |
+| `FocusSessionScreen`              | Sessão em foco pausada / dar play                                          |
+| `SessionEndScreen`                | Fim de sessão                                                               |
+| `PlanScreen`                      | Plano, Carreira (mesma estrutura, conteúdo diferente)                      |
+| `NewItemScreen`                   | Novo plano - cursos, Novo carreira - ações de carreira                     |
+| `VaultScreen`                     | Vale primeiro acesso / após algumas horas de estudo                       |
+| `ProgressScreen`                  | Progresso primeiro acesso / após algumas horas de estudo                  |
+| `CertificatesScreen`              | Certificados primeiro acesso (vazio) / após algumas horas de estudo       |
+| `SettingsScreen`                  | Ajustes                                                                     |
+
+Novos átomos: `Textarea`, `Select`, `SegmentedControl`, `LoadingBar`, `ColorSwatch`,
+`LinkChip`, `Sparkline`, `Notice`, `StepDots`. Novas moléculas: `CompanionCard`,
+`CompanionBubble`, `InfoBox`, `SessionHistoryItem`, `TrendStat`, `AchievementListItem`,
+`SettingsRow`, `EmptyState`. Novos organismos: `SettingsSection`, `AchievementGroup`.
+`Button` ganhou as variantes `amber`/`outline`/`outlineMuted` e `ProgressRing` ganhou
+`tone`/`valueVariant` — ambos documentados no porquê no próprio arquivo (não são do
+Figma "Components", são overrides específicos do fluxo do app).

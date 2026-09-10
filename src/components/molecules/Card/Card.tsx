@@ -58,7 +58,7 @@ export function Card({ track, title, subtitle, variant, onContinue, className }:
           is the documented escape hatch for exactly this one-off case. */}
       <h3
         className={cn(
-          "font-body text-corpo-m font-semibold",
+          "font-body text-corpo font-semibold",
           isCompleted ? "text-palette-grafite" : "text-text-primary",
         )}
       >

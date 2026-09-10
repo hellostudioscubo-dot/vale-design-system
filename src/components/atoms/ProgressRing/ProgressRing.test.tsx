@@ -37,4 +37,19 @@ describe("ProgressRing", () => {
     );
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  it("still exposes the ARIA contract with tone=onDark and valueVariant=timer", async () => {
+    const { container } = render(
+      <ProgressRing
+        value={25}
+        max={25}
+        valueLabel="25:00"
+        caption="Sessão 1"
+        tone="onDark"
+        valueVariant="timer"
+      />,
+    );
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "25");
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });

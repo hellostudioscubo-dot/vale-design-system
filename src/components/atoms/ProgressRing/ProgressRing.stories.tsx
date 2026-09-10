@@ -13,3 +13,24 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const AlmostDone: Story = { args: { value: 95 } };
+
+/** "Sessão em foco" — the full-screen 240px countdown on its dark takeover background. */
+export const FocusSessionTimer: Story = {
+  args: {
+    value: 25,
+    max: 25,
+    size: 240,
+    strokeWidth: 8,
+    valueLabel: "25:00",
+    caption: "Sessão 1",
+    valueVariant: "timer",
+    tone: "onDark",
+  },
+  decorators: [
+    (Story) => (
+      <div className="rounded-card bg-primary-pressed p-10">
+        <Story />
+      </div>
+    ),
+  ],
+};

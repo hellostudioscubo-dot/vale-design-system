@@ -6,3 +6,6 @@ coverage
 *.local
 
 *storybook.log
+
+# Scratch files used while extracting Figma metadata — not part of the project
+.scratch-*
