@@ -1,6 +1,6 @@
 {
   "name": "vale-design-system",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Design System do Vale — App de estudos. Gerado a partir do arquivo Figma (Foundations + Components).",
   "type": "module",
   "license": "MIT",
